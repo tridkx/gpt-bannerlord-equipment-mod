@@ -24,7 +24,7 @@
 6. 扫描完整动作周期并选最差帧渲染。最终 TPAC 上检查颈缝、关节压缩、顶点有限性、裙摆顶点与三角面内部的腿部接触估计。握持返修再检查手掌是否稳定跟随原生手骨、前旋是否挪动手腕；武器挂点属于骨架，移动网格不能代替移动挂点。
 7. 报告实际动作名称、有效帧数、LOD、包 SHA256 与检查方法；前后对比明确版本。渲染若使用源 Blend，应说明它是源文件预览，并用最终 TPAC 回读结果证明导出后的模型、权重与修正目标一致。
 
-本机解析入口是 `D:\gpt-mb2-mod\previewer\baker\skeleton.py`、`animation.py`，最终几何读取为 `D:\gpt-mb2-mod\tools\georead.py`。天香示例渲染脚本为 `tools/render_motion_review.py`；`-- --grip` 使用 `build/grip_baseline/rigged.blend` 和 `reports/grip_twohanded_*.json` 做手部返修对比，`tools/verify_grip.py` 检查最终权重与姿态。基线文件和动作路径是此工程的专用约定，新工程先适配或从对应 Git 版本恢复基线，不能把缺少输入的脚本直接当通用播放器。
+本机解析入口是 `D:\gpt-mb2-mod\previewer\baker\skeleton.py`、`animation.py`，最终几何读取为 `D:\gpt-mb2-mod\tools\georead.py`。天香示例项目为 `D:/gpt-mb2-mod2/mods/TianxiangT5/`，以下路径以该项目为基准；渲染脚本为 `tools/render_motion_review.py`；`-- --grip` 使用 `build/grip_baseline/rigged.blend` 和 `reports/grip_twohanded_*.json` 做手部返修对比，`tools/verify_grip.py` 检查最终权重与姿态。基线文件和动作路径是此工程的专用约定，新工程先适配或从对应 Git 版本恢复基线，不能把缺少输入的脚本直接当通用播放器。
 
 **验证边界**：这条流程没有运行游戏的布料求解器、武器 IK、手部握持形变、角色体型缩放或战场碰撞。没有读取/挂载武器的预览不能证明手已经握住具体武器；胶囊代理也不能证明游戏里没有穿模。Blender Cloth 预览是另外一种求解器，需单独标注。游戏中的最终表现继续由用户测试。
 
