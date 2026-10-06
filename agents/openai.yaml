@@ -1,0 +1,4 @@
+interface:
+  display_name: "骑砍2装备 Mod 制作与返修"
+  short_description: "将模型做成骑砍2装备，完成绑骨、布料、外观返修、检查与本地交付"
+  default_prompt: "使用 $bannerlord-equipment-mod 将工作目录里的模型制作或修改为骑砍2装备 Mod，按现有约定完成检查和本地交付。"
