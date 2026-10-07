@@ -7,6 +7,19 @@ description: 将 FBX、OBJ、Blend 等角色或服装模型制作成《骑马与
 
 交付能装入独立 Module 的装备资源和可继续修改的源文件。以当前模型、已安装游戏资源、用户反馈和已有工程为依据，不把天香 T5 的物体编号、尺寸和返修参数套到所有模型。
 
+## 官方教程与资源入口
+
+查询编辑器操作、资源格式或游戏布料时，优先查下列 TaleWorlds 官方资料，并对照本机游戏与 Modding Tools 版本；中文页面缺失或内容有差异时参照英文页面。
+
+- [Mod 开发文档（英文）](https://moddocs.bannerlord.com/) · [中文入口](https://moddocs.bannerlord.com/zh_cn/)：官方教程总目录。
+- [创建 Mod 快速入门](https://moddocs.bannerlord.com/zh_cn/asset-management/quickguide_create_a_mod/)：模块目录、注册与发布基础。
+- [资产管理](https://moddocs.bannerlord.com/zh_cn/asset-management/)：资源导入、添加/覆盖资产、网格、骨架与动画。
+- [布料模拟（英文）](https://moddocs.bannerlord.com/editor/resource-editors/cloth_simulation/) · [中文](https://moddocs.bannerlord.com/zh_cn/editor/resource-editors/cloth_simulation/)：顶点 Alpha 活动距离、直接/映射模拟、碰撞体、布料材料与预处理文件。
+- [材质编辑器](https://moddocs.bannerlord.com/editor/resource-editors/material_editor/)：着色器、贴图与透明裁切。
+- [API 文档](https://apidoc.bannerlord.com/)：查询游戏代码接口；纯装备资源制作通常先看编辑器文档。
+- [官方论坛 The Smithy — Mod Development](https://forums.taleworlds.com/index.php?forums/the-smithy-mod-development.643/)：霸主 Mod 开发讨论及教程/资源帖；社区帖子需核对版本，不等同于官方技术规范。
+- [Modding Tools 官方说明](https://www.taleworlds.com/en/News/399)：工具获取入口及游戏/工具版本匹配要求，属于历史公告，当前安装状态需另行核实。
+
 ## 接手工程
 
 - 先检查工作目录的 AGENTS.md、Git 状态、目标模组、现有发布版本、原始模型、贴图和生成脚本。已有可复现流程时优先在其上修改；保留用户已有改动。
