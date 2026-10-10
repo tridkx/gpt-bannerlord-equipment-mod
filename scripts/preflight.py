@@ -15,19 +15,32 @@ def main():
     parser.add_argument("--mbtool", type=Path, default=Path(r"D:\mb-tools\mbtool\bin\Release\net9.0\mbtool.exe"))
     parser.add_argument("--asset-tool", type=Path, help="Defaults to workspace tools/AssetTool/AssetTool.dll")
     parser.add_argument("--example-workspace", type=Path, help="Model-specific project; inferred for the local Tianxiang example")
-    parser.add_argument("--helpers", type=Path, default=Path(r"D:\gpt-mb2-mod"))
+    parser.add_argument("--helpers", type=Path, help="Defaults to workspace tools/asset_helpers")
     parser.add_argument("--require-example-pipeline", action="store_true")
     parser.add_argument("--check-blender-python", action="store_true", help="Launch factory-startup background Blender to import dependencies; no model opened or saved")
     args = parser.parse_args()
     args.workspace = args.workspace.resolve()
-    workspace_root = args.workspace
-    if (args.workspace / "mod.json").is_file() and args.workspace.parent.name == "mods":
-        workspace_root = args.workspace.parents[1]
+    # Shared tools belong to the workspace, including when invoked inside a set.
+    workspace_root = next(
+        (path for path in (args.workspace, *args.workspace.parents)
+         if (path / "mods").is_dir() and (path / "tools").is_dir()),
+        args.workspace,
+    )
+    if args.helpers is None:
+        args.helpers = workspace_root / "tools/asset_helpers"
     if args.asset_tool is None:
         args.asset_tool = workspace_root / "tools/AssetTool/AssetTool.dll"
     if args.example_workspace is None:
-        candidate = workspace_root / "mods/TianxiangT5"
-        args.example_workspace = args.workspace if (args.workspace / "mod.json").is_file() else (candidate if candidate.is_dir() else args.workspace)
+        candidates = (
+            workspace_root / "mods/TianxiangCollection/sets/TianxiangT5",
+            workspace_root / "mods/TianxiangT5",  # Older workspaces remain supported.
+        )
+        args.example_workspace = (
+            args.workspace if (args.workspace / "mod.json").is_file()
+            else next((path for path in candidates if path.is_dir()), args.workspace)
+        )
+    else:
+        args.example_workspace = args.example_workspace.resolve()
     checks = []
 
     def record(name, found, required, **detail):
