@@ -39,6 +39,8 @@
 
 `D:/gpt-mb2-mod2/tools/cloth_compiler/` 保存直接布料的解析、编译、验证、TPAC 导出/插入实现。完整 CLI 以该目录 README.md 为准，方法与已验证边界见 [离线布料编译](offline-cloth.md)。Python 依赖 NumPy/SciPy；两个 C# 工具使用 .NET 10 和 mbtool.dll，可用 MbToolPath 覆盖引用。构建输出留在目标模组 build，模型参数和固定策略留在其 tools。
 
+`D:/gpt-mb2-mod2/tools/cloth_simulator/` 提供最终包的近似 CPU 动态诊断、逐帧报告和离线回放；Python 需要 NumPy/Matplotlib，最终包提取复用 NativeClothProbe。含布料任务在 `mod.json.cloth_diagnostics` 配置后由共用打包/安装检查调用，也可单独运行 `pipeline.py --mod <ModId>`。具体用法和限制集中在 [工具 README](D:/gpt-mb2-mod2/tools/cloth_simulator/README.md)，制作流程中的接入要求见 [自动诊断与交付接入](offline-cloth.md#自动诊断与交付接入)。
+
 ## 示例工程里的生成流程
 
 这些脚本含天香 T5 的模型编号、骨骼数、路径和材料计划。新模型先复制并适配到自己的工程，不能直接在原工程运行来代替新模型制作。先阅读入口、输出目标与依赖。下表相对路径以 `mods/TianxiangCollection/sets/TianxiangT5/` 为基准；共用入口明确标为工作区根路径。
