@@ -79,6 +79,29 @@ Blender 内若另建 Cloth 预览副本，放独立隐藏集合，不导出重�
 
 优先保留输入颜色与裁切信息。BC1/DXT1 可用于不透明贴图，BC3/DXT5 保留一般 Alpha，BC5 用于适合该通道约定的法线；生成完整 mip 链并验证最终解码。只有颜色图时可提供保守的平法线/材质参数，不能宣称补齐了原作 PBR。天香曾对特定纱质贴图调整 Alpha 下限，不应强加到新模型或裁切贴图。
 
+### 镜片与玻璃的连续透明
+
+用于需要透过表面看到眼睛或后方物体的镜片、玻璃等。先区分连续透明混合与头发/睫毛的 `alpha_test` 裁切；不要把镜片阈值提高到整片消失来代替透明，也不要给所有裁切材质改成透明通道。
+
+纹理有 Alpha、`BlendMode` 为 `factor` 或 Blender 预览透明，都不足以证明游戏中半透明。还需核对当前 shader 的 Alpha 计算、材质参与的渲染通道、深度写入和排序。尤其从不透明衣服材质复制镜片时，不能只改贴图和混合模式。
+
+本机 Native v1.4.8、标准蒙皮 PBR 的镜片方案可从以下配置起步，按实际着色器和透明需求调整：
+
+| 字段 | 镜片参考及用途 |
+| --- | --- |
+| 颜色贴图 | BC3/DXT5 保存连续 Alpha；从最终 TPAC 解码所有 mip，确认透明度未丢失 |
+| `Material.BlendMode` / `AlphaTest` | 案例使用 `factor` / `0`，避免把镜片作为硬裁切表面 |
+| `Material.Flags` | `dont_draw_to_gbuffer`、`no_modify_depth_buffer`、`alpha_blend_sort`：选择透明前向通道，避免写入不透明深度，并参与透明排序 |
+| 可选 `Material.Flags` | `dont_cast_shadow` 用于不应投射实心阴影的镜片；是否 `two_sided` 按原几何决定 |
+| `ExtraMaterialSettings.RenderOrder` | 案例为 `1`，与身体材质的 `0` 配合；按当前场景和原生样本核对，不固定推广到其他玻璃或多层透明表面 |
+| 布局与 shader 标记 | 蒙皮镜片保留 `skinning` 及 shader 所需布局；标准路径不得启用忽略纹理 Alpha 的 `do_not_use_alpha`。`disable_vertex_color_alpha` 只按顶点 Alpha 的实际用途选择，属于 `ShaderMaterialFlags` |
+
+以上材质标记不能写到 `Mesh.MaterialFlags`。玻璃专用折射 shader、不同 BlendMode 或版本采用各自样本，不直接套用标准 PBR 参数、纹理槽或材质 GUID。
+
+**检查与返修边界**：从最终包回读上述字段、引用和实际 Alpha，确认元数据缓存没有吞掉修改；透明返修对照所有 LOD 的几何、权重、顶点颜色、骨架和布料数据，保留非目标资产。`audit_package.py` 的结构通过不验证透明通道或最终混合。用户实机检查对应界面/场景中能否透过镜片看见眼睛、转动视角时的排序及阴影；仅离线渲染不能代替这项验收。
+
+**已验收例证**：2026-10-13，BoRuRace v0.1.1 的镜片 Alpha 为 `51/255`，保留原 36 面镜片及四级 LOD 几何、权重、贴图和骨架字节，仅补透明通道/深度/排序设置，用户确认眼镜不透明问题修复。证据见 `D:/gpt-mb2-mod2/mods/BoRuRace/tools/build_package.py`、`tools/PackagePatch/Program.cs`、`reports/feedback_fix_validation.json` 与 `reports/user_acceptance.json`。这证明该版本该角色的组合有效，不证明每个标记单独必需，也不将 20% Alpha、RenderOrder=1 或全部场景通过视为通用要求。
+
 ## TPAC 的易错点
 
 - 模块、MetaMesh、材质、贴图、包/资产 GUID 使用自己的命名空间；同一模块版本间保持稳定，其他模型不能复用 `tx5_*` 与 GUID。先在当前游戏定位兼容的网格/材质/贴图模板，再复制类型化字段并覆盖自身数据。
